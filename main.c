@@ -232,10 +232,23 @@ void map()
         line[j]='\0';
         char **str;
         str=split_string(line,'\t');
+
+//        while(str[l]!=NULL)
+//            printf("%s \t",str[l++]);
+//        printf("\n");
+
+        char **str1;
+        char **str2;
+        str1=split_string(str[0],',');
+        str2=split_string(str[1],',');
         int l=0;
-        while(str[l]!=NULL)
-            printf("%s \t",str[l++]);
+        while(str1[l]!=NULL)
+            printf("%s \t",str1[l++]);
+        l=0;
+        while(str2[l]!=NULL)
+            printf("%s \t",str2[l++]);
         printf("\n");
+
 
 
 
