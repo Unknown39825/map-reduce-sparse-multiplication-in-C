@@ -9,7 +9,8 @@ struct Matrix
     int c;
 };
 typedef struct Matrix Matrix;
-
+int COL;
+int ROW;
 void create_mat( Matrix *Mat)
 {
     printf("Enter the no of row and column");
@@ -57,6 +58,8 @@ FILE *D;
 
 void combine(Matrix A,Matrix B)
 {
+    ROW=A.r;
+    COL=B.c;
     int i,j;
      FILE *fp;
    fp= fopen("file1","w");
@@ -210,10 +213,13 @@ char** split_string(char* text, char delim) {
 
 void map()
 {
+
     int n=0;
     char ch;
     FILE *fp;
     fp=fopen("D","r");
+    FILE *ff;
+    ff=fopen("Dpart","w");
 
     while((ch=getc(fp))!=EOF)
     {
@@ -241,13 +247,85 @@ void map()
         char **str2;
         str1=split_string(str[0],',');
         str2=split_string(str[1],',');
-        int l=0;
-        while(str1[l]!=NULL)
-            printf("%s \t",str1[l++]);
-        l=0;
-        while(str2[l]!=NULL)
-            printf("%s \t",str2[l++]);
-        printf("\n");
+//        while(str1[l]!=NULL)
+//            printf("%s \t",str1[l++]);
+//        l=0;
+//        while(str2[l]!=NULL)
+//            printf("%s \t",str2[l++]);
+//        printf("\n");
+
+        if(strcmp(str1[0],"A")==0)
+        {
+           int m,n;
+
+           for(m=0;m<COL;m++)
+           {
+
+
+
+               for(n=0;str2[n]!=NULL;n++)
+               {
+                    char key[100];
+                    char value[100];
+                    key[0]='\0';
+                    value[0]='\0';
+
+                   addstr(key,str1[1]);
+                   addstr(key,",");
+                   char conv[5];
+                   itoa(m,conv,10);
+                   addstr(key,conv);
+
+                   addstr(value,"A");
+                   addstr(value,",");
+                   addstr(value,str1[n+2]);
+                   addstr(value,",");
+                   addstr(value,str2[n]);
+                   fprintf(ff,"[%s|%s]\n",key,value);
+
+
+               }
+
+           }
+
+        }
+
+        if(strcmp(str1[0],"B")==0)
+        {
+           int o,p;
+
+           for(o=0;o<ROW;o++)
+           {
+
+
+
+               for(p=0;str2[p]!=NULL;p++)
+               {
+                    char key[100];
+                    char value[100];
+                    key[0]='\0';
+                    value[0]='\0';
+                    char conv[5];
+
+                   itoa(o,conv,10);
+                   addstr(key,conv);
+                   addstr(key,",");
+                   addstr(key,str1[p+2]);
+                   addstr(value,"B");
+                   addstr(value,",");
+                   addstr(value,str1[1]);
+                   addstr(value,",");
+                   addstr(value,str2[p]);
+                   fprintf(ff,"[%s|%s]\n",key,value);
+
+
+               }
+
+           }
+
+        }
+
+
 
 
 
