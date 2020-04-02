@@ -281,7 +281,7 @@ void map()
                    addstr(value,str1[n+2]);
                    addstr(value,",");
                    addstr(value,str2[n]);
-                   fprintf(ff,"[%s|%s]\n",key,value);
+                   fprintf(ff,"%s|%s\t",key,value);
 
 
                }
@@ -316,7 +316,7 @@ void map()
                    addstr(value,str1[1]);
                    addstr(value,",");
                    addstr(value,str2[p]);
-                   fprintf(ff,"[%s|%s]\n",key,value);
+                   fprintf(ff,"%s|%s\t",key,value);
 
 
                }
@@ -325,20 +325,51 @@ void map()
 
         }
 
-
-
-
-
-
-
-
-
-
-
     }
+    fclose(ff);
 
 
 }
+void reduce()
+{
+    FILE *fp;
+    fp=fopen("Dpart","r");
+    char list[1000];
+    fgets(list,1000,fp);
+    fclose(fp);
+    char **item;
+    item=split_string(list,'\t');
+    fp=fopen("Dpart","w");
+    int i=0;
+    while(item[i]!=NULL)
+    {
+        i++;
+    }
+    int lenght=i;
+    int j;
+    for(i=0;i<lenght-1;i++)
+    {
+        for(j=1+i;j<lenght;j++)
+        {
+            if(strncmp(item[i],item[j],6)>0)
+            {
+                char temp[100];
+                strcpy(temp,item[i]);
+                strcpy(item[i],item[j]);
+                strcpy(item[j],temp);
+            }
+        }
+    }
+    i=0;
+    while(item[i]!=NULL)
+    {
+        fprintf(fp,"%s\n",item[i]);
+        i++;
+    }
+    fclose(fp);
+}
+
+
 
 
 
@@ -356,4 +387,7 @@ int main()
 
     combine(Mat1,Mat2);
     map();
+    reduce();
+
+
 }
