@@ -230,7 +230,15 @@ void map()
         while(((ch=getc(fp))!='\n'))
             line[j++]=ch;
         line[j]='\0';
-        printf("%s \n",line);
+        char **str;
+        str=split_string(line,'\t');
+        int l=0;
+        while(str[l]!=NULL)
+            printf("%s \t",str[l++]);
+        printf("\n");
+
+
+
 
 
 
