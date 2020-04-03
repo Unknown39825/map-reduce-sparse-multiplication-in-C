@@ -270,18 +270,22 @@ void map()
                     key[0]='\0';
                     value[0]='\0';
 
-                   addstr(key,str1[1]);
-                   addstr(key,",");
-                   char conv[5];
-                   itoa(m,conv,10);
-                   addstr(key,conv);
+                    addstr(key,str1[1]);
+                    addstr(key,",");
+                    char conv[5];
+                    itoa(m,conv,10);
+                    addstr(key,conv);
+                    addstr(value,"A");
+                    addstr(value,",");
 
-                   addstr(value,"A");
-                   addstr(value,",");
-                   addstr(value,str1[n+2]);
-                   addstr(value,",");
-                   addstr(value,str2[n]);
-                   fprintf(ff,"%s|%s\t",key,value);
+                    addstr(value,str1[n+2]);
+                    addstr(value,",");
+                    addstr(value,str2[n]);
+
+
+
+
+                   fprintf(ff,"%s|%s\n",key,value);
 
 
                }
@@ -311,12 +315,13 @@ void map()
                    addstr(key,conv);
                    addstr(key,",");
                    addstr(key,str1[p+2]);
+
                    addstr(value,"B");
-                   addstr(value,",");
+                    addstr(value,",");
                    addstr(value,str1[1]);
                    addstr(value,",");
                    addstr(value,str2[p]);
-                   fprintf(ff,"%s|%s\t",key,value);
+                   fprintf(ff,"%s|%s\n",key,value);
 
 
                }
@@ -367,6 +372,23 @@ void reduce()
         i++;
     }
     fclose(fp);
+
+    int mat[ROW][COL];
+    int k=0;
+
+    for(i=0;i<ROW;i++)
+    {
+        for(j=0;j<COL;j++)
+        {
+            if((item[k][0]==i&&item[k][2]==j)&&(item[k+1][0]==i&&item[k+1][2]==j))
+            {
+                while((item[k][0]==i&&item[k][2]==j)&&(item[k+1][0]==i&&item[k+1][2]==j))
+                printf(" %c*%c+ ",item[k][4],item[k+1][4]);
+                k=k+2;
+            }
+        }
+    }
+
 }
 
 
@@ -387,7 +409,7 @@ int main()
 
     combine(Mat1,Mat2);
     map();
-    reduce();
+
 
 
 }
