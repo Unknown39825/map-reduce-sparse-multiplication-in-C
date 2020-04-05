@@ -60,6 +60,11 @@ void combine(Matrix A,Matrix B)
 {
     ROW=A.r;
     COL=B.c;
+    if(A.c!=B.r)
+    {
+        printf("multiplication not possible");
+        exit(0);
+    }
     int i,j;
      FILE *fp;
    fp= fopen("file1.txt","w");
@@ -322,6 +327,7 @@ void map()
 }
 void reduce()
 {
+
     FILE *fp,*ff;
     fp=fopen("Dpart.txt","r");
     char list[1000];
@@ -363,6 +369,7 @@ void reduce()
     fp=fopen("Dpart.txt","r");
     fp=fopen("Dpart.txt","r");
     ff=fopen("result.txt","w");
+    fprintf(ff,"row,col,value\n");
     int flag=0;
     char check[10];
     char **pair;
@@ -419,6 +426,7 @@ void reduce()
                 result=result+aij*bjk;
 
             }
+            if(result)
             fprintf(ff,"%s,%d\n",check,result);
         }
 
