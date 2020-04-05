@@ -62,7 +62,7 @@ void combine(Matrix A,Matrix B)
     COL=B.c;
     int i,j;
      FILE *fp;
-   fp= fopen("file1","w");
+   fp= fopen("file1.txt","w");
 
    for(i=0;i<A.r;i++)
     {
@@ -114,7 +114,7 @@ void combine(Matrix A,Matrix B)
 
 
 //  for matrix b
-fp= fopen("file2","w");
+fp= fopen("file2.txt","w");
 
 
     for(i=0;i<B.r;i++)
@@ -169,10 +169,10 @@ fp= fopen("file2","w");
 //    joining the files
 
 
-    D=fopen("D","w");
+    D=fopen("D.txt","w");
 
     char ch;
-    fp=fopen("file1","r+");
+    fp=fopen("file1.txt","r+");
     while((ch=getc(fp))!=EOF)
     {
         fprintf(D,"%c",ch);
@@ -180,7 +180,7 @@ fp= fopen("file2","w");
     }
 
     FILE *ff;
-   ff=fopen("file2","r+");
+   ff=fopen("file2.txt","r+");
     while((ch=getc(ff))!=EOF)
     {
         fprintf(D,"%c",ch);
@@ -217,9 +217,9 @@ void map()
     int n=0;
     char ch;
     FILE *fp;
-    fp=fopen("D","r");
+    fp=fopen("D.txt","r");
     FILE *ff;
-    ff=fopen("Dpart","w");
+    ff=fopen("Dpart.txt","w");
 
     while((ch=getc(fp))!=EOF)
     {
@@ -227,7 +227,7 @@ void map()
             n++;
     }
     fclose(fp);
-    fp=fopen("D","r");
+    fp=fopen("D.txt","r");
     int i;
     for(i=0;i<n;i++)
     {
@@ -238,21 +238,11 @@ void map()
         line[j]='\0';
         char **str;
         str=split_string(line,'\t');
-
-//        while(str[l]!=NULL)
-//            printf("%s \t",str[l++]);
-//        printf("\n");
-
         char **str1;
         char **str2;
         str1=split_string(str[0],',');
         str2=split_string(str[1],',');
-//        while(str1[l]!=NULL)
-//            printf("%s \t",str1[l++]);
-//        l=0;
-//        while(str2[l]!=NULL)
-//            printf("%s \t",str2[l++]);
-//        printf("\n");
+
 
         if(strcmp(str1[0],"A")==0)
         {
@@ -281,7 +271,7 @@ void map()
                    addstr(value,str1[n+2]);
                    addstr(value,",");
                    addstr(value,str2[n]);
-                   fprintf(ff,"%s|%s\t",key,value);
+                   fprintf(ff,"%s\t%s|",key,value);
 
 
                }
@@ -316,7 +306,7 @@ void map()
                    addstr(value,str1[1]);
                    addstr(value,",");
                    addstr(value,str2[p]);
-                   fprintf(ff,"%s|%s\t",key,value);
+                   fprintf(ff,"%s\t%s|",key,value);
 
 
                }
@@ -332,14 +322,15 @@ void map()
 }
 void reduce()
 {
-    FILE *fp;
-    fp=fopen("Dpart","r");
+    FILE *fp,*ff;
+    fp=fopen("Dpart.txt","r");
     char list[1000];
     fgets(list,1000,fp);
     fclose(fp);
     char **item;
-    item=split_string(list,'\t');
-    fp=fopen("Dpart","w");
+    item=split_string(list,'|');
+    fp=fopen("Dpart.txt","w");
+
     int i=0;
     while(item[i]!=NULL)
     {
@@ -366,7 +357,76 @@ void reduce()
         fprintf(fp,"%s\n",item[i]);
         i++;
     }
+    fprintf(fp,"END");
     fclose(fp);
+    char line[100];
+    fp=fopen("Dpart.txt","r");
+    fp=fopen("Dpart.txt","r");
+    ff=fopen("result.txt","w");
+    int flag=0;
+    char check[10];
+    char **pair;
+    char **value;
+    fgets(line,30,fp);
+    while(strcmp(line,"END"))
+    {
+        int arr1[10]={0};
+        int arr2[10]={0};
+
+        pair=split_string(line,'\t');
+        strcpy(check,pair[0]);
+        do
+        {
+            char line1[100];
+            char **value1;
+            flag=0;
+            value=split_string(pair[1],',');
+
+            if(strcmp(value[0],"A")==0)
+                arr1[atoi(value[1])]=atoi(value[2]);
+            else if(strcmp(value[0],"B")==0)
+                arr2[atoi(value[1])]=atoi(value[2]);
+            fgets(line,30,fp);
+
+            strcpy(line1,line);
+            value1=split_string(line1,'\t');
+
+
+            if(strcmp(check,value1[0])==0)
+                flag=1;
+
+
+
+
+        }while(flag&&(strcmp(line,"END")));
+
+
+
+
+
+
+
+
+
+
+    if(!flag)
+        {
+            int xx,result=0,aij,bjk;
+            for(xx=0;xx<COL;xx++)
+            {
+                aij=(arr1[xx]!=0)?arr1[xx]:0;
+                bjk=(arr2[xx]!=0)?arr2[xx]:0;
+                result=result+aij*bjk;
+
+            }
+            fprintf(ff,"%s,%d\n",check,result);
+        }
+
+    }
+
+    fclose(ff);
+    fclose(fp);
+
 }
 
 
