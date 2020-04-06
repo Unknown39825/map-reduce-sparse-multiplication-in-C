@@ -35,16 +35,7 @@ void GetMat( Matrix *Mat)
 
     }
 }
-void PutMat(Matrix Mat)
-{
-    int i,j;
-    for(i=0;i<Mat.r;i++)
-    {
-        for(j=0;j<Mat.c;j++)
-            printf("%d ",Mat.M[i][j]);
-        printf(" \n");
-    }
-}
+
 
 void addstr(char str1[],char str2[])
 {
@@ -369,7 +360,6 @@ void reduce()
     fp=fopen("Dpart.txt","r");
     fp=fopen("Dpart.txt","r");
     ff=fopen("result.txt","w");
-    fprintf(ff,"row,col,value\n");
     int flag=0;
     char check[10];
     char **pair;
@@ -431,10 +421,48 @@ void reduce()
         }
 
     }
+    fprintf(ff,"END");
 
     fclose(ff);
     fclose(fp);
 
+}
+
+void PutMat()
+{
+    int sparse[100][3];
+    sparse[0][0]=ROW;
+    sparse[0][1]=COL;
+    FILE *fp;
+    int i=1;
+    char line[100];
+    char **pair;
+    fp=fopen("result.txt","r");
+    fgets(line,50,fp);
+    while(strcasecmp(line,"END"))
+    {
+        pair=split_string(line,',');
+        sparse[i][0]=atoi(pair[0]);
+        sparse[i][1]=atoi(pair[1]);
+        sparse[i][2]=atoi(pair[2]);
+        i++;
+
+
+        fgets(line,50,fp);
+    }
+    sparse[0][2]=i-1;
+    printf("Your result is \n row col value:\n");
+
+
+    for(i=0;i<=sparse[0][2];i++)
+    {
+
+            printf("%3d  %3d  %3d \n",sparse[i][0],sparse[i][1],sparse[i][2]);
+            if(i==0)
+                printf("----------------\n");
+    }
+
+fclose(fp);
 }
 
 
@@ -452,10 +480,11 @@ int main()
     GetMat(&Mat1);
     create_mat(&Mat2);
     GetMat(&Mat2);
-
     combine(Mat1,Mat2);
     map();
     reduce();
+    PutMat();
 
 
 }
+
