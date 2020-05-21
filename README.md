@@ -26,3 +26,6 @@ it is used to takes result from the result.txt and
 display the result into sparse form;
 
 
+therse function are made only for integer and 20 x20 matrix if want to modify then change the data type and size
+
+
