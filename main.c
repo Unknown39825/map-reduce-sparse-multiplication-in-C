@@ -1,6 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include<string.h>
+#define size1 100//taking input for Dpart where the element stored row wise
+#define size2 100//size of key value pair string;
+#define sizenum 10 // size of integer for string conversion .
+#define max_size 1000//size for the no of mapped string.
+#define matsize 50 // matrix will be 50 x 50
+struct term
+{
+    int row;
+    int col;
+    int val;
+
+};
 
 struct Matrix
 {
@@ -8,12 +20,17 @@ struct Matrix
     int r;
     int c;
 };
+
 typedef struct Matrix Matrix;
 int COL;
 int ROW;
+
+
+
+
 void create_mat( Matrix *Mat)
 {
-    printf("Enter the no of row and column");
+    printf("Enter the no of row and column: ");
     scanf("%d%d",&Mat->r,&Mat->c);
 
     Mat->M = malloc(sizeof(int *)*(Mat->r));
@@ -28,6 +45,7 @@ void create_mat( Matrix *Mat)
 void GetMat( Matrix *Mat)
 {
     int i,j;
+    printf("Enter the input in normal matrix form\n");
     for(i=0;i<Mat->r;i++)
     {
         for(j=0;j<Mat->c;j++)
@@ -35,7 +53,6 @@ void GetMat( Matrix *Mat)
 
     }
 }
-
 
 void addstr(char str1[],char str2[])
 {
@@ -227,7 +244,7 @@ void map()
     int i;
     for(i=0;i<n;i++)
     {
-        char line[100];
+        char line[size1];
         int j=0;
         while(((ch=getc(fp))!='\n'))
             line[j++]=ch;
@@ -251,14 +268,14 @@ void map()
 
                for(n=0;str2[n]!=NULL;n++)
                {
-                    char key[100];
-                    char value[100];
+                    char key[size2];
+                    char value[size2];
                     key[0]='\0';
                     value[0]='\0';
 
                    addstr(key,str1[1]);
                    addstr(key,",");
-                   char conv[5];
+                   char conv[sizenum];
                    itoa(m,conv,10);
                    addstr(key,conv);
 
@@ -267,7 +284,7 @@ void map()
                    addstr(value,str1[n+2]);
                    addstr(value,",");
                    addstr(value,str2[n]);
-                   fprintf(ff,"%s\t%s|",key,value);
+                   fprintf(ff,"%s\t%s\n",key,value);
 
 
                }
@@ -287,11 +304,11 @@ void map()
 
                for(p=0;str2[p]!=NULL;p++)
                {
-                    char key[100];
-                    char value[100];
+                    char key[size2];
+                    char value[size2];
                     key[0]='\0';
                     value[0]='\0';
-                    char conv[5];
+                    char conv[sizenum];
 
                    itoa(o,conv,10);
                    addstr(key,conv);
@@ -302,7 +319,7 @@ void map()
                    addstr(value,str1[1]);
                    addstr(value,",");
                    addstr(value,str2[p]);
-                   fprintf(ff,"%s\t%s|",key,value);
+                   fprintf(ff,"%s\t%s\n",key,value);
 
 
                }
@@ -312,23 +329,37 @@ void map()
         }
 
     }
+    fprintf(ff,"END");
     fclose(ff);
 
 
 }
+
+
+
 void reduce()
 {
 
     FILE *fp,*ff;
     fp=fopen("Dpart.txt","r");
-    char list[1000];
-    fgets(list,1000,fp);
+
+    char list[size1];
+    fgets(list,size1,fp);
+    char *item[max_size];
+    int i=0;
+    while(strcmp(list,"END"))
+    {
+        item[i]=malloc(sizeof(char)*(strlen(list)+1));
+        strcpy(item[i++],list);
+        fgets(list,size1,fp);
+
+
+    }
     fclose(fp);
-    char **item;
-    item=split_string(list,'|');
+    item[i]=NULL;
     fp=fopen("Dpart.txt","w");
 
-    int i=0;
+    i=0;
     while(item[i]!=NULL)
     {
         i++;
@@ -341,7 +372,7 @@ void reduce()
         {
             if(strncmp(item[i],item[j],6)>0)
             {
-                char temp[100];
+                char temp[size1];
                 strcpy(temp,item[i]);
                 strcpy(item[i],item[j]);
                 strcpy(item[j],temp);
@@ -351,30 +382,30 @@ void reduce()
     i=0;
     while(item[i]!=NULL)
     {
-        fprintf(fp,"%s\n",item[i]);
+        fprintf(fp,"%s",item[i]);
         i++;
     }
     fprintf(fp,"END");
     fclose(fp);
-    char line[100];
+    char line[size1];
     fp=fopen("Dpart.txt","r");
     fp=fopen("Dpart.txt","r");
     ff=fopen("result.txt","w");
     int flag=0;
-    char check[10];
+    char check[size1];
     char **pair;
     char **value;
-    fgets(line,30,fp);
+    fgets(line,size1,fp);
     while(strcmp(line,"END"))
     {
-        int arr1[10]={0};
-        int arr2[10]={0};
+        int arr1[matsize]={0};
+        int arr2[matsize]={0};
 
         pair=split_string(line,'\t');
         strcpy(check,pair[0]);
         do
         {
-            char line1[100];
+            char line1[size1];
             char **value1;
             flag=0;
             value=split_string(pair[1],',');
@@ -428,62 +459,95 @@ void reduce()
 
 }
 
-void PutMat()
+
+
+void filetosparse(struct term sparse[])
 {
-    int sparse[100][3];
-    sparse[0][0]=ROW;
-    sparse[0][1]=COL;
+
+    sparse[0].row=ROW;
+    sparse[0].col=COL;
     FILE *fp;
     int i=1;
-    char line[100];
+    char line[size1];
     char **pair;
     fp=fopen("result.txt","r");
-    fgets(line,50,fp);
+    fgets(line,size1,fp);
     while(strcasecmp(line,"END"))
     {
         pair=split_string(line,',');
-        sparse[i][0]=atoi(pair[0]);
-        sparse[i][1]=atoi(pair[1]);
-        sparse[i][2]=atoi(pair[2]);
+        sparse[i].row=atoi(pair[0]);
+        sparse[i].col=atoi(pair[1]);
+        sparse[i].val=atoi(pair[2]);
         i++;
 
 
-        fgets(line,50,fp);
+        fgets(line,size1,fp);
     }
-    sparse[0][2]=i-1;
+    sparse[0].val=i-1;
     printf("Your result is \n row col value:\n");
-
-
-    for(i=0;i<=sparse[0][2];i++)
-    {
-
-            printf("%3d  %3d  %3d \n",sparse[i][0],sparse[i][1],sparse[i][2]);
-            if(i==0)
-                printf("----------------\n");
-    }
 
 fclose(fp);
 }
 
 
 
+void disp(struct term sparse[])
+{   printf("\n\n output in normal form \n");
+    int i,j,k=1;
+    for(i=0;i<sparse[0].row;i++)
+    {
+        for(j=0;j<+sparse[0].col;j++)
+        {
+            if(sparse[k].row==i&&sparse[k].col==j)
+            {
+                printf("%4d  ",sparse[k].val);
+                k++;
+            }
+            else
+                printf("   0");
+
+        }
+        printf("\n\n");
+    }
+}
 
 
 
 
+void spdisp(struct term sparse[])
+{
+    int i,j;
+    printf("\n\nrow col val");
+    for(i=0;i<=sparse[0].val;i++)
+    {
+        printf("\n%3d %3d %3d",sparse[i].row,sparse[i].col,sparse[i].val);
+        if(i==0)
+            printf("\n");
+
+    }
+
+}
 
 int main()
 {
 
     Matrix Mat1,Mat2;
+    struct term sparse[1000];
+    printf("Matrix 1\n");
     create_mat(&Mat1);
     GetMat(&Mat1);
+    printf("Matrix 2\n");
     create_mat(&Mat2);
     GetMat(&Mat2);
     combine(Mat1,Mat2);
+
+
     map();
     reduce();
-    PutMat();
+    filetosparse(sparse);
+    spdisp(sparse);
+    disp(sparse);
+
 
 
 }
