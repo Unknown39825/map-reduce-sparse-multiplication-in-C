@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include<string.h>
-#define size1 200 // size for string input from file
-#define size2 10 //size for the changing string to int or int to string
-#define size3 20 // size of the matrix to be multiplied
 
 struct Matrix
 {
@@ -66,16 +63,16 @@ void combine(Matrix A,Matrix B)
 
    for(i=0;i<A.r;i++)
     {
-        char str1[size1];
-        char str2[size1];
+        char str1[100];
+        char str2[100];
         str1[0]='\0';
         str2[0]='\0';
-        char line[size1];
+        char line[100];
         line[0]='\0';
 
         addstr(str1,"A,");
-        char num[size2];
-        itoa(i,num,size2);
+        char num[5];
+        itoa(i,num,10);
         addstr(str1,num);
         addstr(str1,",");
 
@@ -86,10 +83,10 @@ void combine(Matrix A,Matrix B)
                 continue;
             else
             {
-                char nt[size2],np[size2];
-                itoa(j,nt,size2);
+                char nt[5],np[5];
+                itoa(j,nt,10);
                 addstr(str1,nt);
-                itoa(A.M[i][j],np,size2);
+                itoa(A.M[i][j],np,10);
                 addstr(str2,np);
                 if(j!=A.c-1)
                 {
@@ -119,16 +116,16 @@ fp= fopen("file2.txt","w");
 
     for(i=0;i<B.r;i++)
     {
-        char str1[size1];
-        char str2[size1];
+        char str1[100];
+        char str2[100];
         str1[0]='\0';
         str2[0]='\0';
-        char line[size1];
+        char line[100];
         line[0]='\0';
 
         addstr(str1,"B,");
-        char num[size2];
-        itoa(i,num,size2);
+        char num[5];
+        itoa(i,num,10);
         addstr(str1,num);
         addstr(str1,",");
 
@@ -139,10 +136,10 @@ fp= fopen("file2.txt","w");
                 continue;
             else
             {
-                char nt[size2],np[size2];
-                itoa(j,nt,size2);
+                char nt[5],np[5];
+                itoa(j,nt,10);
                 addstr(str1,nt);
-                itoa(B.M[i][j],np,size2);
+                itoa(B.M[i][j],np,10);
                 addstr(str2,np);
                 if(j!=B.c-1)
                 {
@@ -231,7 +228,7 @@ void map()
     int i;
     for(i=0;i<n;i++)
     {
-        char line[size1];
+        char line[100];
         int j=0;
         while(((ch=getc(fp))!='\n'))
             line[j++]=ch;
@@ -255,15 +252,15 @@ void map()
 
                for(n=0;str2[n]!=NULL;n++)
                {
-                    char key[size1];
-                    char value[size1];
+                    char key[100];
+                    char value[100];
                     key[0]='\0';
                     value[0]='\0';
 
                    addstr(key,str1[1]);
                    addstr(key,",");
-                   char conv[size2];
-                   itoa(m,conv,size2);
+                   char conv[5];
+                   itoa(m,conv,10);
                    addstr(key,conv);
 
                    addstr(value,"A");
@@ -291,13 +288,13 @@ void map()
 
                for(p=0;str2[p]!=NULL;p++)
                {
-                    char key[size1];
-                    char value[size1];
+                    char key[100];
+                    char value[100];
                     key[0]='\0';
                     value[0]='\0';
-                    char conv[size2];
+                    char conv[5];
 
-                   itoa(o,conv,size2);
+                   itoa(o,conv,10);
                    addstr(key,conv);
                    addstr(key,",");
                    addstr(key,str1[p+2]);
@@ -345,7 +342,7 @@ void reduce()
         {
             if(strncmp(item[i],item[j],6)>0)
             {
-                char temp[size1];
+                char temp[100];
                 strcpy(temp,item[i]);
                 strcpy(item[i],item[j]);
                 strcpy(item[j],temp);
@@ -360,25 +357,25 @@ void reduce()
     }
     fprintf(fp,"END");
     fclose(fp);
-    char line[size1];
+    char line[100];
     fp=fopen("Dpart.txt","r");
     fp=fopen("Dpart.txt","r");
     ff=fopen("result.txt","w");
     int flag=0;
-    char check[size2];
+    char check[10];
     char **pair;
     char **value;
     fgets(line,30,fp);
     while(strcmp(line,"END"))
     {
-        int arr1[size3]={0};
-        int arr2[size3]={0};
+        int arr1[10]={0};
+        int arr2[10]={0};
 
         pair=split_string(line,'\t');
         strcpy(check,pair[0]);
         do
         {
-            char line1[size1];
+            char line1[100];
             char **value1;
             flag=0;
             value=split_string(pair[1],',');
@@ -434,12 +431,12 @@ void reduce()
 
 void PutMat()
 {
-    int sparse[size1][3];
+    int sparse[100][3];
     sparse[0][0]=ROW;
     sparse[0][1]=COL;
     FILE *fp;
     int i=1;
-    char line[size1];
+    char line[100];
     char **pair;
     fp=fopen("result.txt","r");
     fgets(line,50,fp);
