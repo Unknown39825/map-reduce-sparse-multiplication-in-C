@@ -13,48 +13,86 @@ struct term
     int val;
 
 };
-
-struct Matrix
-{
-    int **M;
-    int r;
-    int c;
-};
-
-typedef struct Matrix Matrix;
 int COL;
 int ROW;
 
-
-
-
-void create_mat( Matrix *Mat)
+void sparsein(struct term a[])
 {
+
+
+    int pos=1,cnt;
+    start:
+        fflush(stdin);
     printf("Enter the no of row and column: ");
-    scanf("%d%d",&Mat->r,&Mat->c);
+    scanf("%d%d",&a[0].row,&a[0].col);
+    printf("Enter the no of non zero term: ");
+    scanf("%d",&cnt);
+    printf("Enter in correct sparse format and sequence\n");
 
-    Mat->M = malloc(sizeof(int *)*(Mat->r));
-
-    int i;
-    for(i=0;i<Mat->r;i++)
+    if(cnt>a[0].row*a[0].col)
+        {
+            printf("\n\n\tinvalid input\n");
+          goto start;
+        }
+    printf("Enter the input: \n");
+    printf("row col value\n");
+    while(cnt--)
     {
-        Mat->M[i]=malloc(sizeof(int)*Mat->c);
+        scanf("%d",&a[pos].row);
+        if((a[pos].row>a[0].row)||(a[pos].row<0))
+        {
+             printf("\n\n\t\tinvalid input\n\n");
+             goto start;
+
+        }
+
+    scanf("%d",&a[pos].col);
+    if((a[pos].col>a[0].col)||(a[pos].col<0))
+        {
+             printf("\n\n\t\tinvalid input\n\n");
+             goto start;
+
+        }
+
+    scanf("%d",&a[pos].val);
+    pos++;
     }
+
+    a[0].val=pos-1;
+
+
 }
 
-void GetMat( Matrix *Mat)
+
+void GetMat( struct term A[])
 {
     int i,j;
+    int val;
+    int k=1;
+    printf("Enter the no of row and column: ");
+    scanf("%d%d",&A[0].row,&A[0].col);
+
     printf("Enter the input in normal matrix form\n");
-    for(i=0;i<Mat->r;i++)
+    for(i=0;i<A[0].row;i++)
     {
-        for(j=0;j<Mat->c;j++)
-            scanf("%d",&Mat->M[i][j]);
+        for(j=0;j<A[0].col;j++)
+            {
+                scanf("%d",&val);
+                if(val!=0)
+                {
+                    A[k].row=i;
+                    A[k].col=j;
+                    A[k].val=val;
+                    k++;
+                }
+
+            }
 
     }
+    A[0].val=k-1;
 }
 
-void addstr(char str1[],char str2[])
+void addstr(char str1[],char str2[])//function to add string to another string ;
 {
     int i,j;
     i=strlen(str1);
@@ -64,47 +102,47 @@ void addstr(char str1[],char str2[])
 
 FILE *D;
 
-void combine(Matrix A,Matrix B)
+void combine(struct term A[],struct term B[])//it makes the sparse form and convert it to map reducible form
 {
-    ROW=A.r;
-    COL=B.c;
-    if(A.c!=B.r)
+    ROW=A[0].row;
+    COL=B[0].col;
+    if(A[0].col!=B[0].row)
     {
         printf("multiplication not possible");
         exit(0);
     }
+
     int i,j;
      FILE *fp;
    fp= fopen("file1.txt","w");
+   int k=1;
 
-   for(i=0;i<A.r;i++)
+   for(i=0;i<A[0].row;i++)
     {
-        char str1[100];
-        char str2[100];
+        char str1[size1];
+        char str2[size1];
         str1[0]='\0';
         str2[0]='\0';
-        char line[100];
+        char line[size1];
         line[0]='\0';
 
         addstr(str1,"A,");
-        char num[5];
+        char num[sizenum];
         itoa(i,num,10);
         addstr(str1,num);
         addstr(str1,",");
 
 
-        for(j=0;j<A.c;j++)
+        for(j=0;j<A[0].col;j++)
         {
-            if(A.M[i][j]==0)
-                continue;
-            else
+            if(A[k].row==i&&A[k].col==j)
             {
-                char nt[5],np[5];
+                char nt[sizenum],np[sizenum];
                 itoa(j,nt,10);
                 addstr(str1,nt);
-                itoa(A.M[i][j],np,10);
+                itoa(A[k++].val,np,10);
                 addstr(str2,np);
-                if(j!=A.c-1)
+                if(j!=A[0].col-1)
                 {
                     addstr(str2,",");
                     addstr(str1,",");
@@ -130,37 +168,37 @@ void combine(Matrix A,Matrix B)
 fp= fopen("file2.txt","w");
 
 
-    for(i=0;i<B.r;i++)
+       k=1;
+
+   for(i=0;i<B[0].row;i++)
     {
-        char str1[100];
-        char str2[100];
+        char str1[size1];
+        char str2[size1];
         str1[0]='\0';
         str2[0]='\0';
-        char line[100];
+        char line[size1];
         line[0]='\0';
 
         addstr(str1,"B,");
-        char num[5];
+        char num[sizenum];
         itoa(i,num,10);
         addstr(str1,num);
         addstr(str1,",");
 
 
-        for(j=0;j<B.c;j++)
+        for(j=0;j<B[0].col;j++)
         {
-            if(B.M[i][j]==0)
-                continue;
-            else
+            if(B[k].row==i&&B[k].col==j)
             {
-                char nt[5],np[5];
+                char nt[sizenum],np[sizenum];
                 itoa(j,nt,10);
                 addstr(str1,nt);
-                itoa(B.M[i][j],np,10);
+                itoa(B[k++].val,np,10);
                 addstr(str2,np);
-                if(j!=B.c-1)
+                if(j!=B[0].col-1)
                 {
-                   addstr(str2,",");
-                   addstr(str1,",") ;
+                    addstr(str2,",");
+                    addstr(str1,",");
                 }
 
 
@@ -176,7 +214,6 @@ fp= fopen("file2.txt","w");
 
 
     }
-
     fclose(fp);
 
 //    joining the files
@@ -206,7 +243,9 @@ fp= fopen("file2.txt","w");
 
 
 }
-char** split_string(char* text, char delim) {
+
+char** split_string(char* text, char delim) //function used to split the strings.
+{
 
     char** result = malloc(1*sizeof(char*));
     int size = 1;
@@ -224,7 +263,7 @@ char** split_string(char* text, char delim) {
     return result;
 }
 
-void map()
+void map() //the map function
 {
 
     int n=0;
@@ -337,7 +376,7 @@ void map()
 
 
 
-void reduce()
+void reduce()//the reduce function
 {
 
     FILE *fp,*ff;
@@ -461,7 +500,7 @@ void reduce()
 
 
 
-void filetosparse(struct term sparse[])
+void filetosparse(struct term sparse[])//function to take input of result file and convert to sparse form
 {
 
     sparse[0].row=ROW;
@@ -491,12 +530,12 @@ fclose(fp);
 
 
 
-void disp(struct term sparse[])
+void disp(struct term sparse[])//function  to display in normal form
 {   printf("\n\n output in normal form \n");
     int i,j,k=1;
     for(i=0;i<sparse[0].row;i++)
     {
-        for(j=0;j<+sparse[0].col;j++)
+        for(j=0;j<sparse[0].col;j++)
         {
             if(sparse[k].row==i&&sparse[k].col==j)
             {
@@ -504,7 +543,7 @@ void disp(struct term sparse[])
                 k++;
             }
             else
-                printf("   0");
+               printf("%4d  ",0);
 
         }
         printf("\n\n");
@@ -514,7 +553,7 @@ void disp(struct term sparse[])
 
 
 
-void spdisp(struct term sparse[])
+void spdisp(struct term sparse[])//function to display in sparse form;
 {
     int i,j;
     printf("\n\nrow col val");
@@ -530,23 +569,66 @@ void spdisp(struct term sparse[])
 
 int main()
 {
+    printf("\n\tWelcome to map reduce Sparse Multiplication in C\n\n");
 
-    Matrix Mat1,Mat2;
+    struct term sparse1[1000];
+    struct term sparse2[1000];
     struct term sparse[1000];
+    int choice;
+    start1:
     printf("Matrix 1\n");
-    create_mat(&Mat1);
-    GetMat(&Mat1);
-    printf("Matrix 2\n");
-    create_mat(&Mat2);
-    GetMat(&Mat2);
-    combine(Mat1,Mat2);
 
+    printf("Enter 1 for entering in sparse form 2 for entering in normal form");
+    scanf("%d",&choice);
+    if(choice==1)
+    {
+        sparsein(sparse1);
+    }
+    else if(choice==2)
+    {
+        GetMat(sparse1);
+    }
+     else
+        {
+            printf("\n\tEnter the valid option\n");
+            goto start1;
+        }
+
+    start2:
+    printf("\n\nMatrix 2\n");
+    printf("Enter 1 for entering in sparse form 2 for entering in normal form");
+    scanf("%d",&choice);
+    if(choice==1)
+    {
+        sparsein(sparse2);
+    }
+    else if(choice==2)
+    {
+        GetMat(sparse2);
+    }
+    else
+        {
+            printf("\n\tEnter the valid option\n");
+            goto start2;
+        }
+
+
+    combine(sparse1,sparse2);
+    printf("\n\tCombine task completed");
 
     map();
+
+    printf("\n\tMap task completed");
     reduce();
+    printf("\n\treduce task completed");
     filetosparse(sparse);
     spdisp(sparse);
     disp(sparse);
+
+
+    printf("\n\tpress any key to exit");
+    getch();
+    printf("\n\tThanks \n programmed by chetan");
 
 
 

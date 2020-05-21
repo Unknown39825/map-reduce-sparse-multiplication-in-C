@@ -1,8 +1,13 @@
 # map-reduce-sparse-multiplication-in-C
 this is the implimentation of map reduce  for sparse multiplication in c language 
 
-# the get and  and create function 
-they are the basic function to create and input the matrix 
+# the sparsein function
+it takes input in sparse form
+
+# the get function
+it is  the basic function to create and input the matrix in normal form;
+
+
 
 # the combine function 
 it is used to combining the matrix in mapreducible form
@@ -21,11 +26,13 @@ makes new terms
 finally all result is written to result.txt 
 in the form of row ,col ,value pair.
 
-# then the put fuction 
-it is used to takes result from the result.txt and 
-display the result into sparse form;
+# fileto sparse function
+it is used to take input from the result file;
 
+# disp function 
+it is used to display result in normal form;
 
-therse function are made only for integer and 20 x20 matrix if want to modify then change the data type and size
+# spdisp function
 
+it is used to display result in sparse form;
 
