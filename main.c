@@ -31,6 +31,7 @@ void create_mat( Matrix *Mat)
 void GetMat( Matrix *Mat)
 {
     int i,j;
+    printf("\nEnter the matrix in normal form\n");
     for(i=0;i<Mat->r;i++)
     {
         for(j=0;j<Mat->c;j++)
@@ -469,25 +470,20 @@ fclose(fp);
 }
 
 
-
-
-
-
-
-
 int main()
 {
 
     Matrix Mat1,Mat2;
+    printf("\nMatrix1\n");
     create_mat(&Mat1);
     GetMat(&Mat1);
+    printf("\nMatrix2\n");
     create_mat(&Mat2);
     GetMat(&Mat2);
     combine(Mat1,Mat2);
     map();
     reduce();
     PutMat();
-
 
 }
 
