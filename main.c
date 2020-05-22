@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include<string.h>
-#define size1 100//taking input for Dpart where the element stored row wise
+#include<conio.h>
+#define size1 50//taking input for Dpart where the element stored row wise
 #define size2 100//size of key value pair string;
 #define sizenum 10 // size of integer for string conversion .
 #define max_size 1000//size for the no of mapped string.
-#define matsize 50 // matrix will be 50 x 50
+#define matsize 21 // matrix will be 20 x 20
 struct term
 {
     int row;
@@ -15,6 +16,9 @@ struct term
 };
 int COL;
 int ROW;
+
+
+
 
 void sparsein(struct term a[])
 {
@@ -119,6 +123,7 @@ void combine(struct term A[],struct term B[])//it makes the sparse form and conv
 
    for(i=0;i<A[0].row;i++)
     {
+        int f=0;
         char str1[size1];
         char str2[size1];
         str1[0]='\0';
@@ -147,6 +152,7 @@ void combine(struct term A[],struct term B[])//it makes the sparse form and conv
                     addstr(str2,",");
                     addstr(str1,",");
                 }
+                f=1;
 
 
             }
@@ -156,7 +162,7 @@ void combine(struct term A[],struct term B[])//it makes the sparse form and conv
        addstr(line,str1);
        addstr(line,"\t");
        addstr(line,str2);
-
+    if(f)
        fprintf(fp,"%s\n",line);
 
 
@@ -172,6 +178,7 @@ fp= fopen("file2.txt","w");
 
    for(i=0;i<B[0].row;i++)
     {
+        int g=0;
         char str1[size1];
         char str2[size1];
         str1[0]='\0';
@@ -200,6 +207,7 @@ fp= fopen("file2.txt","w");
                     addstr(str2,",");
                     addstr(str1,",");
                 }
+                g=1;
 
 
             }
@@ -209,7 +217,7 @@ fp= fopen("file2.txt","w");
        addstr(line,str1);
        addstr(line,"\t");
        addstr(line,str2);
-
+        if(g)
        fprintf(fp,"%s\n",line);
 
 
@@ -374,6 +382,34 @@ void map() //the map function
 
 }
 
+//void ftrans(struct term a[],struct term b[])//b= a trans
+//{
+//    int rowterms[1000],startingpos[10001];
+//    int i,j;
+//    b[0].row=a[0].col;
+//    b[0].col=a[0].row;
+//    b[0].val=a[0].val;
+//    for(i=0;i<=a[0].col;i++)
+//    rowterms[i]=0;
+//    for(i=1;i<=a[0].val;i++)
+//        rowterms[a[i].col]++;
+//
+//    startingpos[1]=1;
+//
+//
+//    for(i=2;i<=a[0].col;i++)
+//        startingpos[i]=startingpos[i-1]+rowterms[i-1];
+//    for(i=1;i<=a[0].val;i++)
+//    {
+//
+//        j=startingpos[a[i].col]++;
+//        b[j].row=a[i].col;
+//        b[j].col=a[i].row;
+//        b[j].val=a[i].val;
+//    }
+//
+//
+//}
 
 
 void reduce()//the reduce function
@@ -385,7 +421,7 @@ void reduce()//the reduce function
     char list[size1];
     fgets(list,size1,fp);
     char *item[max_size];
-    int i=0;
+    long long  i=0;
     while(strcmp(list,"END"))
     {
         item[i]=malloc(sizeof(char)*(strlen(list)+1));
@@ -403,18 +439,21 @@ void reduce()//the reduce function
     {
         i++;
     }
-    int lenght=i;
-    int j;
+    long long  lenght=i;
+    long long  j;
+
     for(i=0;i<lenght-1;i++)
     {
-        for(j=1+i;j<lenght;j++)
+
+        for(j=0;j<lenght-i-1;j++)
         {
-            if(strncmp(item[i],item[j],6)>0)
+            if(strcmp(item[j],item[j+1])>0)
             {
                 char temp[size1];
-                strcpy(temp,item[i]);
-                strcpy(item[i],item[j]);
-                strcpy(item[j],temp);
+                strcpy(temp,item[j]);
+                strcpy(item[j],item[j+1]);
+                strcpy(item[j+1],temp);
+
             }
         }
     }
@@ -523,7 +562,42 @@ void filetosparse(struct term sparse[])//function to take input of result file a
         fgets(line,size1,fp);
     }
     sparse[0].val=i-1;
-    printf("Your result is \n row col value:\n");
+
+    int  j;
+   int swapped;
+   for (i = 1; i <=sparse[0].val; i++)
+   {
+
+     for (j = 1; j <= sparse[0].val-i; j++)
+     {
+        if ((sparse[j].row>sparse[j+1].row)||((sparse[j].row<=sparse[j+1].row)&&(sparse[j].col>sparse[j+1].col)))
+        {
+            struct term temp;
+            temp.row=sparse[j].row;
+            temp.col=sparse[j].col;
+            temp.val=sparse[j].val;
+            sparse[j].row=sparse[j+1].row;
+            sparse[j].col=sparse[j+1].col;
+            sparse[j].val=sparse[j+1].val;
+            sparse[j+1].row=temp.row;
+            sparse[j+1].col=temp.col;
+            sparse[j+1].val=temp.val;
+
+
+        }
+     }
+
+
+
+   }
+
+
+
+
+
+
+    struct term trans[1000];
+
 
 fclose(fp);
 }
@@ -556,14 +630,22 @@ void disp(struct term sparse[])//function  to display in normal form
 void spdisp(struct term sparse[])//function to display in sparse form;
 {
     int i,j;
+    FILE *fp;
+    fp=fopen("result.txt","w");
     printf("\n\nrow col val");
+
     for(i=0;i<=sparse[0].val;i++)
     {
         printf("\n%3d %3d %3d",sparse[i].row,sparse[i].col,sparse[i].val);
+        fprintf(fp,"\n%d,%d,%3d",sparse[i].row,sparse[i].col,sparse[i].val);
         if(i==0)
-            printf("\n");
+            {
+                fprintf(fp,"\n");
+                printf("\n");
+            }
 
     }
+    fclose(fp);
 
 }
 
