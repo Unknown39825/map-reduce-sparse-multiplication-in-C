@@ -5,8 +5,15 @@
 #define size1 50//taking input for Dpart where the element stored row wise
 #define size2 100//size of key value pair string;
 #define sizenum 10 // size of integer for string conversion .
-#define max_size 1000//size for the no of mapped string.
+#define max_size 100000//size for the no of mapped string.
 #define matsize 21 // matrix will be 20 x 20
+
+struct pair
+{
+    int key[2];
+    int value[3];
+};
+
 struct term
 {
     int row;
@@ -16,9 +23,7 @@ struct term
 };
 int COL;
 int ROW;
-
-
-
+int COM;
 
 void sparsein(struct term a[])
 {
@@ -67,7 +72,6 @@ void sparsein(struct term a[])
 
 }
 
-
 void GetMat( struct term A[])
 {
     int i,j;
@@ -115,6 +119,7 @@ void combine(struct term A[],struct term B[])//it makes the sparse form and conv
         printf("multiplication not possible");
         exit(0);
     }
+    COM=A[0].col;
 
     int i,j;
      FILE *fp;
@@ -274,7 +279,7 @@ char** split_string(char* text, char delim) //function used to split the strings
 void map() //the map function
 {
 
-    int n=0;
+    long long int n=0;
     char ch;
     FILE *fp;
     fp=fopen("D.txt","r");
@@ -288,7 +293,7 @@ void map() //the map function
     }
     fclose(fp);
     fp=fopen("D.txt","r");
-    int i;
+    long long int i;
     for(i=0;i<n;i++)
     {
         char line[size1];
@@ -382,35 +387,32 @@ void map() //the map function
 
 }
 
-//void ftrans(struct term a[],struct term b[])//b= a trans
+
+
+
+//int cmp(char A[],char B[])//comparison function used to compare the maped string and sort them;
 //{
-//    int rowterms[1000],startingpos[10001];
-//    int i,j;
-//    b[0].row=a[0].col;
-//    b[0].col=a[0].row;
-//    b[0].val=a[0].val;
-//    for(i=0;i<=a[0].col;i++)
-//    rowterms[i]=0;
-//    for(i=1;i<=a[0].val;i++)
-//        rowterms[a[i].col]++;
-//
-//    startingpos[1]=1;
-//
-//
-//    for(i=2;i<=a[0].col;i++)
-//        startingpos[i]=startingpos[i-1]+rowterms[i-1];
-//    for(i=1;i<=a[0].val;i++)
+//    char *a;
+//    char *b;
+//    a=malloc(sizeof(char)*(strlen(A)+1));
+//    b=malloc(sizeof(char)*(strlen(B)+1));
+//    strcpy(a,A);
+//    strcpy(b,B);
+//    char **item1;
+//    char **item2;
+//    item1=split_string(a,'\t');
+//    item2=split_string(b,'\t');
+//    char val1,val2;
+//    val1=item1[1][0];
+//    val2=item2[1][0];
+//    if( (strcmp(item1[0],item2[0])>0)   || (  (strcmp(item1[0],item2[0])==0)  &&(val1>val2)))
 //    {
-//
-//        j=startingpos[a[i].col]++;
-//        b[j].row=a[i].col;
-//        b[j].col=a[i].row;
-//        b[j].val=a[i].val;
+//        return 1;
 //    }
 //
+//    return 0;
 //
 //}
-
 
 void reduce()//the reduce function
 {
@@ -421,7 +423,7 @@ void reduce()//the reduce function
     char list[size1];
     fgets(list,size1,fp);
     char *item[max_size];
-    long long  i=0;
+    long long  int i=0;
     while(strcmp(list,"END"))
     {
         item[i]=malloc(sizeof(char)*(strlen(list)+1));
@@ -432,22 +434,24 @@ void reduce()//the reduce function
     }
     fclose(fp);
     item[i]=NULL;
-    fp=fopen("Dpart.txt","w");
+    fp=fopen("Dpart1.txt","w");
 
     i=0;
     while(item[i]!=NULL)
     {
         i++;
     }
-    long long  lenght=i;
-    long long  j;
+    long long int lenght=i;
+    long long int  j;
+
+
 
     for(i=0;i<lenght-1;i++)
     {
 
         for(j=0;j<lenght-i-1;j++)
         {
-            if(strcmp(item[j],item[j+1])>0)
+            if(strncmp(item[j],item[j+1],5)>0)
             {
                 char temp[size1];
                 strcpy(temp,item[j]);
@@ -457,6 +461,7 @@ void reduce()//the reduce function
             }
         }
     }
+
     i=0;
     while(item[i]!=NULL)
     {
@@ -466,8 +471,7 @@ void reduce()//the reduce function
     fprintf(fp,"END");
     fclose(fp);
     char line[size1];
-    fp=fopen("Dpart.txt","r");
-    fp=fopen("Dpart.txt","r");
+    fp=fopen("Dpart1.txt","r");
     ff=fopen("result.txt","w");
     int flag=0;
     char check[size1];
@@ -492,7 +496,7 @@ void reduce()//the reduce function
                 arr1[atoi(value[1])]=atoi(value[2]);
             else if(strcmp(value[0],"B")==0)
                 arr2[atoi(value[1])]=atoi(value[2]);
-            fgets(line,30,fp);
+            fgets(line,size1,fp);
 
             strcpy(line1,line);
             value1=split_string(line1,'\t');
@@ -507,18 +511,10 @@ void reduce()//the reduce function
         }while(flag&&(strcmp(line,"END")));
 
 
-
-
-
-
-
-
-
-
     if(!flag)
         {
             int xx,result=0,aij,bjk;
-            for(xx=0;xx<COL;xx++)
+            for(xx=0;xx<COM;xx++)
             {
                 aij=(arr1[xx]!=0)?arr1[xx]:0;
                 bjk=(arr2[xx]!=0)?arr2[xx]:0;
@@ -529,7 +525,19 @@ void reduce()//the reduce function
             fprintf(ff,"%s,%d\n",check,result);
         }
 
+    int mmn;
+    for(mmn=0;mmn<COM;mmn++)
+            {
+//                aij=(arr1[mmn]!=0)?arr1[mmn]:0;
+//                bjk=(arr2[mmn]!=0)?arr2[mmn]:0;
+                    printf("%d  ",arr1[mmn]);
+                    printf("%d  ",arr2[mmn]);
+
+
+            }
+     printf("\n");
     }
+
     fprintf(ff,"END");
 
     fclose(ff);
@@ -545,7 +553,7 @@ void filetosparse(struct term sparse[])//function to take input of result file a
     sparse[0].row=ROW;
     sparse[0].col=COL;
     FILE *fp;
-    int i=1;
+    long long int i=1;
     char line[size1];
     char **pair;
     fp=fopen("result.txt","r");
@@ -570,7 +578,7 @@ void filetosparse(struct term sparse[])//function to take input of result file a
 
      for (j = 1; j <= sparse[0].val-i; j++)
      {
-        if ((sparse[j].row>sparse[j+1].row)||((sparse[j].row<=sparse[j+1].row)&&(sparse[j].col>sparse[j+1].col)))
+        if ((sparse[j].row>sparse[j+1].row)||((sparse[j].row==sparse[j+1].row)&&(sparse[j].col>sparse[j+1].col)))
         {
             struct term temp;
             temp.row=sparse[j].row;
@@ -596,7 +604,7 @@ void filetosparse(struct term sparse[])//function to take input of result file a
 
 
 
-    struct term trans[1000];
+//    struct term trans[1000];
 
 
 fclose(fp);
@@ -631,21 +639,22 @@ void spdisp(struct term sparse[])//function to display in sparse form;
 {
     int i,j;
     FILE *fp;
-    fp=fopen("result.txt","w");
+//    fp=fopen("result.txt","w");
     printf("\n\nrow col val");
 
     for(i=0;i<=sparse[0].val;i++)
     {
+
         printf("\n%3d %3d %3d",sparse[i].row,sparse[i].col,sparse[i].val);
-        fprintf(fp,"\n%d,%d,%3d",sparse[i].row,sparse[i].col,sparse[i].val);
+//        fprintf(fp,"\n%d,%d,%3d",sparse[i].row,sparse[i].col,sparse[i].val);
         if(i==0)
             {
-                fprintf(fp,"\n");
+//                fprintf(fp,"\n");
                 printf("\n");
             }
 
     }
-    fclose(fp);
+//    fclose(fp);
 
 }
 
@@ -669,6 +678,7 @@ int main()
     else if(choice==2)
     {
         GetMat(sparse1);
+        disp(sparse1);
     }
      else
         {
@@ -687,6 +697,7 @@ int main()
     else if(choice==2)
     {
         GetMat(sparse2);
+        disp(sparse2);
     }
     else
         {
