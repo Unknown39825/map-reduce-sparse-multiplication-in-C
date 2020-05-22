@@ -36,3 +36,4 @@ it is used to display result in normal form;
 
 it is used to display result in sparse form;
 
+currently 20x 20 is supported we can change size in the preprecessor 

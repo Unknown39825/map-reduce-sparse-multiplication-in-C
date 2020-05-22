@@ -2,30 +2,32 @@
 #include <stdlib.h>
 #include<string.h>
 #include<conio.h>
-#define size1 50//taking input for Dpart where the element stored row wise
-#define size2 100//size of key value pair string;
-#define sizenum 10 // size of integer for string conversion .
-#define max_size 100000//size for the no of mapped string.
-#define matsize 21 // matrix will be 20 x 20
+#define size1 100//taking input for Dpart where the element stored row wise
+#define size2 500//size of key value pair string;
+#define matsize 29 // max matrix will be 25 x 25
+#define sizenum 50 // size of integer for string conversion .
+#define max_size matsize*matsize*matsize*2//size for the no of mapped string.
 
-struct pair
+
+
+struct pair//pair used for key value combination
 {
     int key[2];
     int value[3];
 };
 
-struct term
+struct term//sparse matrix
 {
     int row;
     int col;
     int val;
 
 };
-int COL;
-int ROW;
-int COM;
+int COL;//col used to store final col
+int ROW;//final row
+int COM;//common row
 
-void sparsein(struct term a[])
+void sparsein(struct term a[])//take input in sparse form;
 {
 
 
@@ -72,7 +74,7 @@ void sparsein(struct term a[])
 
 }
 
-void GetMat( struct term A[])
+void GetMat( struct term A[])//take input in normal form;
 {
     int i,j;
     int val;
@@ -296,7 +298,7 @@ void map() //the map function
     long long int i;
     for(i=0;i<n;i++)
     {
-        char line[size1];
+        char line[size2];
         int j=0;
         while(((ch=getc(fp))!='\n'))
             line[j++]=ch;
@@ -307,8 +309,6 @@ void map() //the map function
         char **str2;
         str1=split_string(str[0],',');
         str2=split_string(str[1],',');
-
-
         if(strcmp(str1[0],"A")==0)
         {
            int m,n;
@@ -336,7 +336,8 @@ void map() //the map function
                    addstr(value,str1[n+2]);
                    addstr(value,",");
                    addstr(value,str2[n]);
-                   fprintf(ff,"%s\t%s\n",key,value);
+                   addstr(key,",");
+                   fprintf(ff,"%s%s\n",key,value);
 
 
                }
@@ -371,7 +372,8 @@ void map() //the map function
                    addstr(value,str1[1]);
                    addstr(value,",");
                    addstr(value,str2[p]);
-                   fprintf(ff,"%s\t%s\n",key,value);
+                   addstr(key,",");
+                   fprintf(ff,"%s%s\n",key,value);
 
 
                }
@@ -390,29 +392,33 @@ void map() //the map function
 
 
 
-//int cmp(char A[],char B[])//comparison function used to compare the maped string and sort them;
-//{
-//    char *a;
-//    char *b;
-//    a=malloc(sizeof(char)*(strlen(A)+1));
-//    b=malloc(sizeof(char)*(strlen(B)+1));
-//    strcpy(a,A);
-//    strcpy(b,B);
-//    char **item1;
-//    char **item2;
-//    item1=split_string(a,'\t');
-//    item2=split_string(b,'\t');
-//    char val1,val2;
-//    val1=item1[1][0];
-//    val2=item2[1][0];
-//    if( (strcmp(item1[0],item2[0])>0)   || (  (strcmp(item1[0],item2[0])==0)  &&(val1>val2)))
-//    {
-//        return 1;
-//    }
-//
-//    return 0;
-//
-//}
+int cmp(struct pair A,struct pair B)//comparison function used to compare the maped string and sort them;
+{
+
+    if(A.key[0]>B.key[0])
+        return 1;
+    else if( A.key[0]==B.key[0]&& A.key[1]>B.key[1])
+    return 1;
+    else if(A.key[0]==B.key[0]&& A.key[1]==B.key[1]&&A.value[0]>B.value[0])
+        return 1;
+    else if(A.key[0]==B.key[0]&& A.key[1]==B.key[1]&&A.value[0]==B.value[0]&&A.value[1]>B.value[1])
+    return 1;
+    return -1;
+
+
+}
+pairswap(struct pair *p1,struct pair *p2)
+{
+
+    struct pair temp;
+    temp=*p1;
+    *p1=*p2;
+    *p2=temp;
+}
+
+
+
+struct pair item[max_size];
 
 void reduce()//the reduce function
 {
@@ -422,26 +428,28 @@ void reduce()//the reduce function
 
     char list[size1];
     fgets(list,size1,fp);
-    char *item[max_size];
     long long  int i=0;
     while(strcmp(list,"END"))
     {
-        item[i]=malloc(sizeof(char)*(strlen(list)+1));
-        strcpy(item[i++],list);
+        char **splitter;
+        splitter=split_string(list,',');
+        item[i].key[0]=atoi(splitter[0]);
+        item[i].key[1]=atoi(splitter[1]);
+        item[i].value[0]=splitter[2][0];
+        item[i].value[1]=atoi(splitter[3]);
+        item[i].value[2]=atoi(splitter[4]);
+        i++;
         fgets(list,size1,fp);
+
 
 
     }
     fclose(fp);
-    item[i]=NULL;
+//    printf("i is equal to %d",i);
     fp=fopen("Dpart1.txt","w");
 
-    i=0;
-    while(item[i]!=NULL)
-    {
-        i++;
-    }
     long long int lenght=i;
+
     long long int  j;
 
 
@@ -451,69 +459,69 @@ void reduce()//the reduce function
 
         for(j=0;j<lenght-i-1;j++)
         {
-            if(strncmp(item[j],item[j+1],5)>0)
+            if(cmp(item[j],item[j+1])>0)
             {
-                char temp[size1];
-                strcpy(temp,item[j]);
-                strcpy(item[j],item[j+1]);
-                strcpy(item[j+1],temp);
-
+               pairswap(&item[j],&item[j+1]);
             }
         }
     }
 
     i=0;
-    while(item[i]!=NULL)
+    while(i<lenght)
     {
-        fprintf(fp,"%s",item[i]);
+        fprintf(fp,"%d,%d\t%c,%d,%d\n",item[i].key[0],item[i].key[1] ,item[i].value[0] ,item[i].value[1],item[i].value[2]);
         i++;
     }
     fprintf(fp,"END");
     fclose(fp);
     char line[size1];
-    fp=fopen("Dpart1.txt","r");
+
     ff=fopen("result.txt","w");
     int flag=0;
     char check[size1];
     char **pair;
     char **value;
-    fgets(line,size1,fp);
-    while(strcmp(line,"END"))
+
+    i=0;
+    while(i<lenght)
     {
         int arr1[matsize]={0};
         int arr2[matsize]={0};
 
-        pair=split_string(line,'\t');
-        strcpy(check,pair[0]);
+        int k1=item[i].key[0],k2=item[i].key[1];
+
         do
         {
-            char line1[size1];
-            char **value1;
+
+
             flag=0;
-            value=split_string(pair[1],',');
-
-            if(strcmp(value[0],"A")==0)
-                arr1[atoi(value[1])]=atoi(value[2]);
-            else if(strcmp(value[0],"B")==0)
-                arr2[atoi(value[1])]=atoi(value[2]);
-            fgets(line,size1,fp);
-
-            strcpy(line1,line);
-            value1=split_string(line1,'\t');
 
 
-            if(strcmp(check,value1[0])==0)
+            if(item[i].value[0]=='A')
+//                (strcmp(value[0],"A")==0)
+                arr1[item[i].value[1]]=item[i].value[2];
+            else if(item[i].value[0]=='B')
+                arr2[item[i].value[1]]=item[i].value[2];
+//
+//            fgets(line,size1,fp);
+//
+//            strcpy(line1,line);
+//            value1=split_string(line1,'\t');
+
+
+            if(item[i+1].key[0]==k1&&item[i+1].key[1]==k2)
                 flag=1;
 
 
 
-
-        }while(flag&&(strcmp(line,"END")));
+        i++;
+        }while(flag&&(i<lenght));
 
 
     if(!flag)
         {
-            int xx,result=0,aij,bjk;
+            int xx,aij,bjk;
+            long long int result=0;
             for(xx=0;xx<COM;xx++)
             {
                 aij=(arr1[xx]!=0)?arr1[xx]:0;
@@ -522,20 +530,20 @@ void reduce()//the reduce function
 
             }
             if(result)
-            fprintf(ff,"%s,%d\n",check,result);
+            fprintf(ff,"%d,%d,%lld\n",k1,k2,result);
         }
 
     int mmn;
-    for(mmn=0;mmn<COM;mmn++)
-            {
-//                aij=(arr1[mmn]!=0)?arr1[mmn]:0;
-//                bjk=(arr2[mmn]!=0)?arr2[mmn]:0;
-                    printf("%d  ",arr1[mmn]);
-                    printf("%d  ",arr2[mmn]);
-
-
-            }
-     printf("\n");
+//    for(mmn=0;mmn<COM;mmn++)
+//            {
+////                aij=(arr1[mmn]!=0)?arr1[mmn]:0;
+////                bjk=(arr2[mmn]!=0)?arr2[mmn]:0;
+//                    printf("%d  ",arr1[mmn]);
+//                    printf("%d  ",arr2[mmn]);
+//
+//
+//            }
+//     printf("\n");
     }
 
     fprintf(ff,"END");
@@ -544,8 +552,6 @@ void reduce()//the reduce function
     fclose(fp);
 
 }
-
-
 
 void filetosparse(struct term sparse[])//function to take input of result file and convert to sparse form
 {
@@ -572,40 +578,6 @@ void filetosparse(struct term sparse[])//function to take input of result file a
     sparse[0].val=i-1;
 
     int  j;
-   int swapped;
-   for (i = 1; i <=sparse[0].val; i++)
-   {
-
-     for (j = 1; j <= sparse[0].val-i; j++)
-     {
-        if ((sparse[j].row>sparse[j+1].row)||((sparse[j].row==sparse[j+1].row)&&(sparse[j].col>sparse[j+1].col)))
-        {
-            struct term temp;
-            temp.row=sparse[j].row;
-            temp.col=sparse[j].col;
-            temp.val=sparse[j].val;
-            sparse[j].row=sparse[j+1].row;
-            sparse[j].col=sparse[j+1].col;
-            sparse[j].val=sparse[j+1].val;
-            sparse[j+1].row=temp.row;
-            sparse[j+1].col=temp.col;
-            sparse[j+1].val=temp.val;
-
-
-        }
-     }
-
-
-
-   }
-
-
-
-
-
-
-//    struct term trans[1000];
-
 
 fclose(fp);
 }
@@ -722,8 +694,4 @@ int main()
     printf("\n\tpress any key to exit");
     getch();
     printf("\n\tThanks \n programmed by chetan");
-
-
-
 }
-
