@@ -650,7 +650,7 @@ int main()
     else if(choice==2)
     {
         GetMat(sparse1);
-        disp(sparse1);
+//        disp(sparse1);
     }
      else
         {
@@ -669,7 +669,7 @@ int main()
     else if(choice==2)
     {
         GetMat(sparse2);
-        disp(sparse2);
+//        disp(sparse2);
     }
     else
         {
