@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include<string.h>
 #include<conio.h>
+#define matsize 55 // max matrix will be 25 x 25
 #define size1 100//taking input for Dpart where the element stored row wise
-#define size2 500//size of key value pair string;
-#define matsize 29 // max matrix will be 25 x 25
+#define size2 matsize*8//size of key value pair string mapped;
 #define sizenum 50 // size of integer for string conversion .
 #define max_size matsize*matsize*matsize*2//size for the no of mapped string.
+#define sizesparse matsize*matsize
 
 
 
@@ -131,11 +132,11 @@ void combine(struct term A[],struct term B[])//it makes the sparse form and conv
    for(i=0;i<A[0].row;i++)
     {
         int f=0;
-        char str1[size1];
-        char str2[size1];
+        char str1[size2];
+        char str2[size2];
         str1[0]='\0';
         str2[0]='\0';
-        char line[size1];
+        char line[2*size2];
         line[0]='\0';
 
         addstr(str1,"A,");
@@ -186,11 +187,11 @@ fp= fopen("file2.txt","w");
    for(i=0;i<B[0].row;i++)
     {
         int g=0;
-        char str1[size1];
-        char str2[size1];
+        char str1[size2];
+        char str2[size2];
         str1[0]='\0';
         str2[0]='\0';
-        char line[size1];
+        char line[2*size2];
         line[0]='\0';
 
         addstr(str1,"B,");
@@ -298,8 +299,8 @@ void map() //the map function
     long long int i;
     for(i=0;i<n;i++)
     {
-        char line[size2];
-        int j=0;
+        char line[size2*2];
+        long long int j=0;
         while(((ch=getc(fp))!='\n'))
             line[j++]=ch;
         line[j]='\0';
@@ -320,8 +321,8 @@ void map() //the map function
 
                for(n=0;str2[n]!=NULL;n++)
                {
-                    char key[size2];
-                    char value[size2];
+                    char key[size1];
+                    char value[size1];
                     key[0]='\0';
                     value[0]='\0';
 
@@ -634,9 +635,9 @@ int main()
 {
     printf("\n\tWelcome to map reduce Sparse Multiplication in C\n\n");
 
-    struct term sparse1[1000];
-    struct term sparse2[1000];
-    struct term sparse[1000];
+    struct term sparse1[sizesparse];
+    struct term sparse2[sizesparse];
+    struct term sparse[sizesparse];
     int choice;
     start1:
     printf("Matrix 1\n");
