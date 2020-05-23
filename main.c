@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include<string.h>
 #include<conio.h>
-#define matsize 55 // max matrix will be 25 x 25
+#define matsize 45 // max matrix will be 40 x 40
 #define size1 100//taking input for Dpart where the element stored row wise
 #define size2 matsize*8//size of key value pair string mapped;
 #define sizenum 50 // size of integer for string conversion .
@@ -408,7 +408,8 @@ int cmp(struct pair A,struct pair B)//comparison function used to compare the ma
 
 
 }
-pairswap(struct pair *p1,struct pair *p2)
+
+pairswap(struct pair *p1,struct pair *p2)//swapping the key value pair
 {
 
     struct pair temp;
@@ -416,8 +417,6 @@ pairswap(struct pair *p1,struct pair *p2)
     *p1=*p2;
     *p2=temp;
 }
-
-
 
 struct pair item[max_size];
 

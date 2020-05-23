@@ -36,4 +36,5 @@ it is used to display result in normal form;
 
 it is used to display result in sparse form;
 
-currently 20x 20 is supported we can change size in the preprecessor 
+currently 40 x 40 is supported we can change size in the preprecessor 
+and maximum it can handle 800 input per matrix if size increase time incresase so better sorting tecnique may be used.
