@@ -444,6 +444,18 @@ void reduce()//the reduce function
 
 
     }
+
+        //done this to make the last element not matched with any one.
+        {
+            item[i].key[0]=99999;
+            item[i].key[1]=99999;
+            item[i].value[0]=99999;
+            item[i].value[1]=99999;
+            item[i].value[2]=99999;
+
+        }
+
+
     fclose(fp);
 //    printf("i is equal to %d",i);
     fp=fopen("Dpart1.txt","w");
