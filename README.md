@@ -1,5 +1,5 @@
 # map-reduce-sparse-multiplication-in-C
-this is the implimentation of map reduce  for sparse multiplication in c language 
+this is the basic implementation for the sparse multiplication using map reduce.
 
 # the sparsein function
 it takes input in sparse form
